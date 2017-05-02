@@ -133,11 +133,14 @@ def html_tree_to_text(tree):
     for el in tree.iter():
         el_text = (el.text or '') + (el.tail or '')
         if len(el_text) > 1:
-            if el.tag in _BLOCKTAGS:
+            if el.text:
+                text += el.text.strip()
+            if el.tag in _BLOCKTAGS or el.tag in _HARDBREAKS:
                 text += "\n"
             if el.tag == 'li':
                 text += "  * "
-            text += el_text.strip() + " "
+            if el.tail:
+                text += el.tail.strip() + " "
 
             # add href to the output
             href = el.attrib.get('href')
