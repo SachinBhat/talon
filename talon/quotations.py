@@ -373,7 +373,7 @@ def extract_from_plain(msg_body):
     msg_body = preprocess(msg_body, delimiter)
     # don't process too long messages
     lines = msg_body.splitlines()[:MAX_LINES_COUNT]
-    markers = mark_message_lines(lines)
+    markers = remove_initial_spaces_and_mark_message_lines(lines)
     lines = process_marked_lines(lines, markers)
 
     # concatenate lines, change links back, strip and return
@@ -466,7 +466,7 @@ def _extract_from_html(msg_body):
              for line in lines]
 
     # Use plain text quotation extracting algorithm
-    markers = mark_message_lines(lines)
+    markers = remove_initial_spaces_and_mark_message_lines(lines)
     return_flags = []
     process_marked_lines(lines, markers, return_flags)
     lines_were_deleted, first_deleted, last_deleted = return_flags
