@@ -13,7 +13,7 @@ from copy import deepcopy
 from lxml import html, etree
 
 from talon.utils import (get_delimiter, html_tree_to_text,
-                         html_document_fromstring)
+                         html_fromstring)
 from talon import html_quotations
 from six.moves import range
 import six
@@ -431,7 +431,7 @@ def _extract_from_html(msg_body):
         return msg_body
 
     msg_body = msg_body.replace(b'\r\n', b'\n')
-    html_tree = html_document_fromstring(msg_body)
+    html_tree = html_fromstring(msg_body)
 
     if html_tree is None:
         return msg_body
