@@ -187,7 +187,7 @@ def html_fromstring(s):
         if html_too_big(s):
             return None
 
-        return lxml.html.document_fromstring(s, ensure_head_body=True) #html5parser.fromstring(s, parser=_html5lib_parser())
+        return lxml.html.fromstring(s, ensure_head_body=True) #html5parser.fromstring(s, parser=_html5lib_parser())
     except Exception:
         pass
 
@@ -201,7 +201,7 @@ def html_document_fromstring(s):
         if html_too_big(s):
             return None
 
-        return lxml.html.document_fromstring(s, ensure_head_body=True) #html5parser.document_fromstring(s, parser=_html5lib_parser())
+        return lxml.html.fromstring(s, ensure_head_body=True) #html5parser.document_fromstring(s, parser=_html5lib_parser())
     except Exception:
         pass
 
