@@ -153,7 +153,6 @@ def cut_blockquote(html_message):
     ''' Cuts the last non-nested blockquote with wrapping elements.'''
     quote = html_message.xpath(
         '(.//blockquote)'
-        '[not(@class="gmail_quote") and not(ancestor::blockquote)]'
         '[last()]')
 
     if quote:

@@ -193,8 +193,8 @@ def html_document_fromstring(s):
     if isinstance(s, six.text_type):
         s = s.encode('utf8')
     try:
-        if html_too_big(s):
-            return None
+        #if html_too_big(s):
+        #    return None
 
         return html5parser.document_fromstring(s, parser=_html5lib_parser())
     except Exception:
