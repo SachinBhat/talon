@@ -167,7 +167,7 @@ def _mark_candidate_indexes(lines, candidate):
     for i, line_idx in reversed(list(enumerate(candidate))):
         if len(lines[line_idx].strip()) > TOO_LONG_SIGNATURE_LINE:
             #markers[i] = 'l' because we dont have usecases where is exceeds TOO_LONG_SIGNATURE_LINE
-	    markers[i] = 'c'
+		markers[i] = 'c'
         else:
             line = lines[line_idx].strip()
             if line.startswith('-') and line.strip("-"):
