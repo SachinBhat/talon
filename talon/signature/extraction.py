@@ -8,7 +8,7 @@ import numpy
 import regex as re
 from talon.signature.bruteforce import get_signature_candidate
 from talon.signature.learning.featurespace import features, build_pattern
-from talon.signature.learning.helpers import has_signature
+from talon.signature.learning.helpers import has_signature, contains_sender_names
 from talon.utils import get_delimiter
 
 log = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ RE_REVERSE_SIGNATURE = re.compile(r'''
    # it could end with empty line
    e*
    # there could be text lines but no more than 2 in a row
-   (te*){,2}
+   (te*){,5}
    # every block should end with signature line
    s
 )+
@@ -85,6 +85,7 @@ def _mark_lines(lines, sender):
     # mark lines starting from bottom up
     # mark only lines that belong to candidate
     # no need to mark all lines of the message
+    contain_sender_name_variable = False
     for i, line in reversed(list(enumerate(candidate))):
         # markers correspond to lines not candidate
         # so we need to recalculate our index to be
@@ -92,7 +93,10 @@ def _mark_lines(lines, sender):
         j = len(lines) - len(candidate) + i
         if not line.strip():
             markers[j] = 'e'
-        elif is_signature_line(line, sender, EXTRACTOR):
+        elif is_signature_line(line, sender, EXTRACTOR) and contains_sender_names(sender)(line):
+            markers[j] = 's'
+            contain_sender_name_variable = True
+        elif is_signature_line(line, sender, EXTRACTOR) and contain_sender_name_variable == False:
             markers[j] = 's'
 
     return "".join(markers)

@@ -215,6 +215,11 @@ def has_signature(body, sender):
     for line in candidate:
         # we check lines for sender's name, phone, email and url,
         # those signature lines don't take more then 27 lines
+        splitLine = line.split("|")
+        if len(splitLine) > 1:
+            for l in splitLine:
+                if len(l.strip()) <= 27 and contains_sender_names(sender)(l):
+                    return True
         if len(line.strip()) > 27:
             continue
         elif contains_sender_names(sender)(line):

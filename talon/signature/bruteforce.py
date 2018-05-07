@@ -9,7 +9,6 @@ from talon.signature.constants import (SIGNATURE_MAX_LINES,
 from talon.utils import get_delimiter
 
 log = logging.getLogger(__name__)
-
 # regex to fetch signature based on common signature words
 RE_SIGNATURE = re.compile(r'''
                (
@@ -20,7 +19,17 @@ RE_SIGNATURE = re.compile(r'''
                        |
                        ^regards[\s,!]*$
                        |
+                       ^thanks[\s]*and[\s]*regards[\s,!]*$
+                       |
+                       ^kind[\s]*regards[\s,!]*$
+                       |
+                       ^with[\s]*kind[\s]*regards[\s,!]*$
+                       |
+                       ^warm[\s]*regards[\s,!]*$
+                       |
                        ^cheers[\s,!]*$
+                       |
+                       ^sincerely[\s,!]*$
                        |
                        ^best[ a-z]*[\s,!]*$
                    )
@@ -166,8 +175,8 @@ def _mark_candidate_indexes(lines, candidate):
     # mark lines starting from bottom up
     for i, line_idx in reversed(list(enumerate(candidate))):
         if len(lines[line_idx].strip()) > TOO_LONG_SIGNATURE_LINE:
-            #markers[i] = 'l' because we dont have usecases where is exceeds TOO_LONG_SIGNATURE_LINE
-		markers[i] = 'c'
+            #markers[i] = 'l' because we have usecases where is exceeds TOO_LONG_SIGNATURE_LINE
+		    markers[i] = 'c'
         else:
             line = lines[line_idx].strip()
             if line.startswith('-') and line.strip("-"):
