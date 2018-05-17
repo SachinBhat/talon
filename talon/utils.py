@@ -9,8 +9,10 @@ import chardet
 import html5lib
 import regex as re
 import six
-from lxml.cssselect import CSSSelector
+
+import lxml.html
 from lxml.html import html5parser
+from lxml.cssselect import CSSSelector
 
 from talon.constants import RE_DELIMITER
 
@@ -36,7 +38,7 @@ def safe_format(format_string, *args, **kwargs):
 
     # ignore other errors
     except:
-        return u''
+        return ''
 
 
 def to_unicode(str_or_unicode, precise=False):
@@ -131,11 +133,14 @@ def html_tree_to_text(tree):
     for el in tree.iter():
         el_text = (el.text or '') + (el.tail or '')
         if len(el_text) > 1:
-            if el.tag in _BLOCKTAGS:
+            if el.text:
+                text += el.text.strip()
+            if el.tag in _BLOCKTAGS or el.tag in _HARDBREAKS:
                 text += "\n"
             if el.tag == 'li':
                 text += "  * "
-            text += el_text.strip() + " "
+            if el.tail:
+                text += el.tail.strip() + " "
 
             # add href to the output
             href = el.attrib.get('href')
@@ -176,13 +181,13 @@ def html_to_text(string):
 def html_fromstring(s):
     """Parse html tree from string. Return None if the string can't be parsed.
     """
-    if isinstance(s, six.text_type):
-        s = s.encode('utf8')
+    if isinstance(s, bytes):
+        s = s.decode()
     try:
         if html_too_big(s):
             return None
 
-        return html5parser.fromstring(s, parser=_html5lib_parser())
+        return lxml.html.fromstring(s, ensure_head_body=True) #html5parser.fromstring(s, parser=_html5lib_parser())
     except Exception:
         pass
 
@@ -190,13 +195,13 @@ def html_fromstring(s):
 def html_document_fromstring(s):
     """Parse html tree from string. Return None if the string can't be parsed.
     """
-    if isinstance(s, six.text_type):
-        s = s.encode('utf8')
+    if isinstance(s, bytes):
+        s = s.decode()
     try:
         #if html_too_big(s):
         #    return None
 
-        return html5parser.document_fromstring(s, parser=_html5lib_parser())
+        return lxml.html.fromstring(s, ensure_head_body=True) #html5parser.document_fromstring(s, parser=_html5lib_parser())
     except Exception:
         pass
 
@@ -260,4 +265,4 @@ _RE_EXCESSIVE_NEWLINES = re.compile("\n{2,10}")
 
 # an extensive research shows that exceeding this limit
 # might lead to excessive processing time
-_MAX_TAGS_COUNT = 419
+_MAX_TAGS_COUNT = 1257

@@ -57,7 +57,7 @@ RE_PHONE_SIGNATURE = re.compile(r'''
 # c - could be signature line
 # d - line starts with dashes (could be signature or list item)
 # l - long line
-RE_SIGNATURE_CANDIDATE = re.compile(r'''
+RE_SIGNATURE_CANDIDATE = re.compile(br'''
     (?P<candidate>c+d)[^d]
     |
     (?P<candidate>c+d)$
@@ -170,17 +170,18 @@ def _mark_candidate_indexes(lines, candidate):
     'cdc'
     """
     # at first consider everything to be potential signature lines
-    markers = list('c' * len(candidate))
+    markers = bytearray('c'*len(candidate), 'utf-8')
 
     # mark lines starting from bottom up
     for i, line_idx in reversed(list(enumerate(candidate))):
         if len(lines[line_idx].strip()) > TOO_LONG_SIGNATURE_LINE:
-            markers[i] = 'c'
-            #markers[i] = 'l' because we have usecases where is exceeds TOO_LONG_SIGNATURE_LINE
+            markers[i] = ord(b'c')
+            #markers[i] = ord(b'l') because we have usecases where is exceeds TOO_LONG_SIGNATURE_LINE
+
         else:
             line = lines[line_idx].strip()
             if line.startswith('-') and line.strip("-"):
-                markers[i] = 'd'
+                markers[i] = ord(b'd')
 
     return "".join(markers)
 

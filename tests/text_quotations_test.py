@@ -182,7 +182,7 @@ bla-bla - bla"""
 
 
 def _check_pattern_original_message(original_message_indicator):
-    msg_body = u"""Test reply
+    msg_body = """Test reply
 
 -----{}-----
 
@@ -190,12 +190,13 @@ Test"""
     eq_('Test reply', quotations.extract_from_plain(
         msg_body.format(six.text_type(original_message_indicator))))
 
+
 def test_english_original_message():
     _check_pattern_original_message('Original Message')
     _check_pattern_original_message('Reply Message')
 
 def test_german_original_message():
-    _check_pattern_original_message(u'Ursprüngliche Nachricht')
+    _check_pattern_original_message('Ursprüngliche Nachricht')
     _check_pattern_original_message('Antwort Nachricht')
 
 def test_danish_original_message():
@@ -312,8 +313,8 @@ def test_short_quotation_with_newline():
 On Tue, Jan 27, 2015 at 12:42 PM -0800, "Company" <christine.XXX@XXX.com> wrote:
 
 Hi Mark,
-Blah blah? 
-Thanks,Christine 
+Blah blah?
+Thanks,Christine
 
 On Jan 27, 2015, at 11:55 AM, Mark XXX <mark@XXX.com> wrote:
 
@@ -357,7 +358,7 @@ Blah-blah-blah
 
 def test_french_multiline_from_block():
     eq_('Lorem ipsum', quotations.extract_from_plain(
-    u"""Lorem ipsum
+    """Lorem ipsum
 
 De : Brendan xxx [mailto:brendan.xxx@xxx.com]
 Envoyé : vendredi 23 janvier 2015 16:39
@@ -369,7 +370,7 @@ Blah-blah-blah
 
 def test_french_from_block():
     eq_('Lorem ipsum', quotations.extract_from_plain(
-    u"""Lorem ipsum
+    """Lorem ipsum
 
 Le 23 janv. 2015 à 22:03, Brendan xxx <brendan.xxx@xxx.com<mailto:brendan.xxx@xxx.com>> a écrit:
 
@@ -377,7 +378,7 @@ Bonjour!"""))
 
 def test_polish_from_block():
     eq_('Lorem ipsum', quotations.extract_from_plain(
-    u"""Lorem ipsum
+    """Lorem ipsum
 
 W dniu 28 stycznia 2015 01:53 użytkownik Zoe xxx <zoe.xxx@xxx.com>
 napisał:
@@ -399,7 +400,7 @@ Blah-blah-blah
 
 def test_swedish_from_block():
     eq_('Allo! Follow up MIME!', quotations.extract_from_plain(
-    u"""Allo! Follow up MIME!
+    """Allo! Follow up MIME!
 Från: Anno Sportel [mailto:anno.spoel@hsbcssad.com]
 Skickat: den 26 augusti 2015 14:45
 Till: Isacson Leiff
@@ -418,7 +419,7 @@ Veniam laborum mlkshk kale chips authentic. Normcore mumblecore laboris, fanny p
 
 def test_norwegian_from_line():
     eq_('Lorem', quotations.extract_from_plain(
-    u"""Lorem
+    """Lorem
 På 14 september 2015 på 02:23:18, Valentino Rudy (valentino@rudy.be) skrev:
 
 Veniam laborum mlkshk kale chips authentic. Normcore mumblecore laboris, fanny pack readymade eu blog chia pop-up freegan enim master cleanse.
@@ -568,7 +569,7 @@ def test_mark_message_lines():
              '> Hi',
              '',
              'Signature']
-    eq_('tessemet', quotations.mark_message_lines(lines))
+    eq_(b'tessemet', quotations.mark_message_lines(lines))
 
     lines = ['Just testing the email reply',
              '',
@@ -582,41 +583,40 @@ def test_mark_message_lines():
              'wrote:',
              '',
              'Tarmo Lehtpuu has posted the following message on']
-    eq_('tettessset', quotations.mark_message_lines(lines))
+    eq_(b'tettessset', quotations.mark_message_lines(lines))
 
 
 def test_process_marked_lines():
     # quotations and last message lines are mixed
     # consider all to be a last message
-    markers = 'tsemmtetm'
-    lines = [str(i) for i in range(len(markers))]
+    markers = b'tsemmtetm'
     lines = [str(i) for i in range(len(markers))]
 
     eq_(lines, quotations.process_marked_lines(lines, markers))
 
     # no splitter => no markers
-    markers = 'tmm'
+    markers = b'tmm'
     lines = ['1', '2', '3']
     eq_(['1', '2', '3'], quotations.process_marked_lines(lines, markers))
 
     # text after splitter without markers is quotation
-    markers = 'tst'
+    markers = b'tst'
     lines = ['1', '2', '3']
     eq_(['1'], quotations.process_marked_lines(lines, markers))
 
     # message + quotation + signature
-    markers = 'tsmt'
+    markers = b'tsmt'
     lines = ['1', '2', '3', '4']
     eq_(['1', '4'], quotations.process_marked_lines(lines, markers))
 
     # message + <quotation without markers> + nested quotation
-    markers = 'tstsmt'
+    markers = b'tstsmt'
     lines = ['1', '2', '3', '4', '5', '6']
     eq_(['1'], quotations.process_marked_lines(lines, markers))
 
     # test links wrapped with paranthesis
     # link starts on the marker line
-    markers = 'tsmttem'
+    markers = b'tsmttem'
     lines = ['text',
              'splitter',
              '>View (http://example.com',
@@ -627,7 +627,7 @@ def test_process_marked_lines():
     eq_(lines[:1], quotations.process_marked_lines(lines, markers))
 
     # link starts on the new line
-    markers = 'tmmmtm'
+    markers = b'tmmmtm'
     lines = ['text',
              '>'
              '>',
@@ -638,7 +638,7 @@ def test_process_marked_lines():
     eq_(lines[:1], quotations.process_marked_lines(lines, markers))
 
     # check all "inline" replies
-    markers = 'tsmtmtm'
+    markers = b'tsmtmtm'
     lines = ['text',
              'splitter',
              '>',
@@ -649,7 +649,7 @@ def test_process_marked_lines():
     eq_(lines, quotations.process_marked_lines(lines, markers))
 
     # inline reply with link not wrapped in paranthesis
-    markers = 'tsmtm'
+    markers = b'tsmtm'
     lines = ['text',
              'splitter',
              '>',
@@ -658,7 +658,7 @@ def test_process_marked_lines():
     eq_(lines, quotations.process_marked_lines(lines, markers))
 
     # inline reply with link wrapped in paranthesis
-    markers = 'tsmtm'
+    markers = b'tsmtm'
     lines = ['text',
              'splitter',
              '>',
@@ -748,8 +748,9 @@ def test_standard_replies():
         with open(filename) as f:
             message = email.message_from_file(f)
             body = next(email.iterators.typed_subpart_iterator(message, subtype='plain'))
-            text = ''.join(body_iterator(body, True))
-
+            text = ''.join(email.iterators.body_line_iterator(body, True))
+            if not text:
+              text = ''.join(email.iterators.body_line_iterator(body, False))
             stripped_text = quotations.extract_from_plain(text)
             reply_text_fn = filename[:-4] + '_reply_text'
             if os.path.isfile(reply_text_fn):
@@ -807,7 +808,7 @@ def test_split_email():
         >
         >
 """
-    expected_markers = "stttttsttttetesetesmmmmmmssmmmmmmsmmmmmmmm"
+    expected_markers = b"stttttsttttetesetesmmmmmmssmmmmmmsmmmmmmmm"
     markers = quotations.split_emails(msg)
     eq_(markers, expected_markers)
 
