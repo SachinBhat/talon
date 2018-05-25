@@ -183,7 +183,7 @@ def _mark_candidate_indexes(lines, candidate):
             if line.startswith('-') and line.strip("-"):
                 markers[i] = ord(b'd')
 
-    return "".join(markers)
+    return markers
 
 
 def _process_marked_candidate_indexes(candidate, markers):

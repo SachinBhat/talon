@@ -99,7 +99,7 @@ def _mark_lines(lines, sender):
         elif is_signature_line(line, sender, EXTRACTOR) and contain_sender_name_variable == False:
             markers[j] = ord(b's')
 
-    return "".join(markers)
+    return markers
 
 
 def _process_marked_lines(lines, markers):
