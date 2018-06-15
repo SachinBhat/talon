@@ -453,9 +453,11 @@ def _extract_from_html(msg_body):
                       html_quotations.cut_gmail_quote(html_tree) or
                       html_quotations.cut_zimbra_quote(html_tree) or
                       html_quotations.cut_microsoft_quote(html_tree) or
-                      html_quotations.cut_by_id(html_tree) or
-                      html_quotations.cut_from_block(html_tree)
+                      html_quotations.cut_by_id(html_tree)
                       )
+                      # or
+                      # html_quotations.cut_from_block(html_tree)
+                      # )
     html_tree_copy = deepcopy(html_tree)
 
     number_of_checkpoints = html_quotations.add_checkpoint(html_tree, 0)
@@ -498,8 +500,8 @@ def _extract_from_html(msg_body):
             html_tree_copy, 0, quotation_checkpoints
         )
 
-    if _readable_text_empty(html_tree_copy):
-        return msg_body
+    # if _readable_text_empty(html_tree_copy):
+    #     return msg_body
 
     return _html_tostring(html_tree_copy)
 
